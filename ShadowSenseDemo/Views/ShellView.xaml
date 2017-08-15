@@ -1,0 +1,68 @@
+﻿<Window x:Class="ShadowSenseDemo.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:ShadowSenseDemo.Views"
+        xmlns:behaviors="clr-namespace:ShadowSenseDemo.Helpers"
+        xmlns:models="clr-namespace:ShadowSenseDemo.Models"
+        Icon="/SS.ico"
+        mc:Ignorable="d"
+        Title="ShadowSense SDK Demo" MinHeight="768" MinWidth="1280" >
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="ShadowSense Settings"  Foreground="{DynamicResource PrimaryHueDarkBrush}"/>
+
+
+        <materialDesign:ColorZone Background="{DynamicResource PrimaryHueMidBrush}"  Mode="PrimaryMid" materialDesign:ShadowAssist.ShadowDepth="Depth2" Panel.ZIndex="1"  Grid.Row="1" >
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Margin="20,0,0,0" >
+                    <TextBlock Text="Name" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                <TextBlock Text="{Binding DeviceName}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                    <TextBlock Text="Version" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                    <TextBlock Text="{Binding DeviceVersion}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="2">
+                <TextBlock Text="Serial" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                    <TextBlock Text="{Binding DeviceSerial}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+            </StackPanel>
+        </Grid>
+        </materialDesign:ColorZone>
+
+        <dragablz:TabablzControl DockPanel.Dock="Top"
+                                 ItemsSource="{Binding TabContents}"
+                                 SelectedItem="{Binding CurrentTab}">
+            <dragablz:TabablzControl.HeaderItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock Text="{Binding DisplayName}" Style="{StaticResource MaterialDesignBody1TextBlock}" Margin="10,0,10,0" />
+                    </Grid>
+                </DataTemplate>
+            </dragablz:TabablzControl.HeaderItemTemplate>
+
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController />
+            </dragablz:TabablzControl.InterTabController>
+        </dragablz:TabablzControl>
+
+
+    </Grid>
+</Window>

@@ -1,0 +1,1143 @@
+﻿<UserControl x:Class="ShadowSenseDemo.Views.ConfigurationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:ShadowSenseDemo.Views"
+             xmlns:behaviors="clr-namespace:ShadowSenseDemo.Helpers"
+             xmlns:models="clr-namespace:ShadowSenseDemo.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Margin="20">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}" >
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" HorizontalAlignment="Stretch" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid HorizontalAlignment="Stretch" Margin="20,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Last Action" Style="{StaticResource MaterialDesignButtonTextBlock}" Foreground="#aaa"/>
+                    <TextBlock Text="{Binding LastAction}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Grid.Column="1">
+                    <TextBlock Text="Status" Style="{StaticResource MaterialDesignButtonTextBlock}" Foreground="#aaa"/>
+                    <TextBlock Text="{Binding Status}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+                </StackPanel>
+            </Grid>
+
+
+            <ProgressBar Grid.Row="3" Style="{StaticResource MaterialDesignCircularProgressBar}"     
+                        Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"                                 
+                        Value="35"
+                                 Width="50" Height="50"
+                        IsIndeterminate="True"
+                        VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12 12 12 12"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <ComboBox  materialDesign:HintAssist.Hint="Select a setting to change" 
+                           Width="400"
+                           Margin="20,20,20,20"
+                           ItemsSource="{Binding FunctionList}" 
+                           SelectedItem="{Binding SelectedSetting, Mode=TwoWay}" 
+                           VerticalAlignment="Top" FontSize="16" />
+                <Button Content="Save" Command="{Binding ComboSetting}" CommandParameter="Set" />
+                <Button Content="Load" Command="{Binding ComboSetting}" CommandParameter="Get" Margin="10,0,0,0"/>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Button Content="Save" Command="{Binding SaveSettings}" />
+                <Button Content="Load" Command="{Binding LoadSettings}" Margin="10,0,0,0"/>
+
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="2" Visibility="Collapsed">
+            <ListBox 
+                           ItemsSource="{Binding FunctionList}" 
+                           SelectedItem="{Binding SelectedSetting, Mode=TwoWay}" >
+            </ListBox>
+
+        </Grid>
+        <Grid VerticalAlignment="Top" >
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Padding="0,0,20,0" >
+
+                <TreeView HorizontalContentAlignment="Stretch" MinWidth="220">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}" >
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeViewItem Header="General" FontWeight="DemiBold" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                        <TreeViewItem Header="USB" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="USB Boot Delay" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.UsbBootDelay, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Power Options" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Active Mode Led Brightness" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ActiveModeLedBrightness, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Active Mode Frame Time" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ActiveModeFrameTime, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Idle Mode Led Brightness" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.IdleModeLedBrightness, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Idle Mode Frame Time" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.IdleModeFrameTime, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Idle Mode Time Until Idle" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.IdleModeTimeUntilIdle, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Data Pipes" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Windows Touch Pipe Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WindowsTouchPipeEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Windows Touch Data Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WindowsTouchDataEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Mouse Pipe Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.MousePipeEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Mouse Data Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.MouseDataEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    <TreeViewItem Header="Filters" Foreground="{DynamicResource MaterialDesignToolTipBackground}" FontWeight="DemiBold">
+                        <TreeViewItem Header="Motion" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Filter Size" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.FilterSize, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Filter Depth" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.FilterDepth, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Touch Rejection" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Touch Reject Enable" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.TouchRejectEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Touch Reject Maximum Area" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.TouchRejectMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Touch Reject Minimum Area" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.TouchRejectMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Contaminants" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Recovery Speed" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.RecoverySpeed, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Calibration Period" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.CalibrationPeriod, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Touch Delay" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="New Touch Delay" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.NewTouchDelay, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Shadow" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Separation Threshold" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.SeparationThreshold, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Maximum Shadow" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.MaximumShadow, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Minimum Shadow" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.MinimumShadow, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Confidence" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.TouchConfidence, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                        <TreeViewItem Header="Liquid" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Water Reject Mode" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WaterRejectMode, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Water Reject Amount" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WaterRejectAmount, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Water Shadow Maximum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WaterShadowMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Water Shadow Minimum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.WaterShadowMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    <TreeViewItem Header="Transforms" FontWeight="DemiBold" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                        <TreeViewItem Header="Apple Settings" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Transform Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.MacTransformEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Screen Mask" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Top" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ScreenMask.Top, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Bottom" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ScreenMask.Bottom, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Left" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ScreenMask.Left, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Right" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ScreenMask.Right, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Screen Transforms" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Orientation" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.ScreenOrientation, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Screen Matrix" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M11" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M11, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M12" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M12, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M13" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M13, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M21" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M21, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M22" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M22, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M23" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M23, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M31" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M31, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M32" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M32, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="M33" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Transform.M33, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Screen Offset/Gain" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Offset X" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.AltTransform.OffsetX, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Offset Y" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.AltTransform.OffsetY, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Gain X" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.AltTransform.GainX, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Gain Y" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.AltTransform.GainY, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Transform Mode" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.TransformMode, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                    </TreeViewItem>
+                    <TreeViewItem Header="Mouse" FontWeight="DemiBold" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Mouse Mode" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.MouseMode, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Mouse Right Click Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.MouseRightClickEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Mouse Move Track Mode Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.MouseMoveTrackModeEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Mouse Right Click Sensitivity" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.MouseRightClickSensitivity, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Mouse Deadband" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.MouseDeadband, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    <TreeViewItem Header="Stylus" FontWeight="DemiBold" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                        <TreeViewItem Header="Settings" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Maximum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Minimum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Eraser Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.EraserEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Eraser Maximum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.EraserMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Eraser Minimum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.EraserMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+
+                        </TreeViewItem>
+                        <TreeViewItem Header="Shadow" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Shadow Maximum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusShadowMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Shadow Minimum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusShadowMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Eraser Shadow Maximum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.EraserShadowMaximumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Eraser Shadow Minimum Area" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.EraserShadowMinimumArea, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Palm Rejection Radius" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.StylusPalmRejectionRadius, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+
+                    </TreeViewItem>
+
+                    <TreeViewItem Header="Regions" FontWeight="DemiBold" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                        <TreeViewItem Header="Region One Mask" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Enable" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region1Enable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Top" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region1Mask.Top, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Bottom" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region1Mask.Bottom, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Left" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region1Mask.Left, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Right" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region1Mask.Right, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Region Two Mask" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Enable" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Enable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Top" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Mask.Top, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Bottom" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Mask.Bottom, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Left" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Mask.Left, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Right" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Mask.Right, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Region Three Mask" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Enable" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region3Enable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Top" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region3Mask.Top, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Bottom" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region3Mask.Bottom, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Left" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region3Mask.Left, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Right" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region2Mask.Right, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="Region Four Mask" IsExpanded="True" Foreground="{DynamicResource MaterialDesignToolTipBackground}">
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Enable" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region4Enable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Top" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region4Mask.Top, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Bottom" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region4Mask.Bottom, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Left" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region4Mask.Left, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem >
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Right" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.Region4Mask.Right, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeViewItem>
+                    <!--<e:Interaction.Behaviors>
+                            <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedSetting, Mode=TwoWay}" />
+                        </e:Interaction.Behaviors>-->
+                </TreeView>
+            </ScrollViewer>
+        </Grid>
+
+
+    </Grid>
+</UserControl>
