@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Baanto.ShadowSense.Events;
+using ShadowSenseDemo.Helpers;
+using ShadowSenseDemo.ViewModels;
+using System;
 using System.Collections.Generic;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Ink;
-using ShadowSenseDemo.Helpers;
 
 namespace ShadowSenseDemo.Views
 {
@@ -18,6 +19,9 @@ namespace ShadowSenseDemo.Views
     {
         private Dictionary<int, Stroke> currentStrokes = new Dictionary<int, Stroke>();
         private Dictionary<int, TouchDot> currentTouches = new Dictionary<int, TouchDot>();
+
+        private DrawViewModel drawViewModel;
+
         public DrawView()
         {
             InitializeComponent();
@@ -27,6 +31,58 @@ namespace ShadowSenseDemo.Views
 
             this.Loaded += DrawViewLoaded;
             this.Unloaded += DrawViewUnloaded;
+
+            this.DataContextChanged += DrawViewDataContextChanged;
+        }
+
+
+
+        private void DrawViewDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var vm = e.NewValue as DrawViewModel;
+            if (vm != null)
+            {
+                this.drawViewModel = vm;
+
+                Observable.FromEventPattern<InsertedEvent>(this.drawViewModel.ShadowSenseService, "Inserted")
+                     .Subscribe(x => ShadowSenseDeviceInserted(x.Sender, x.EventArgs));
+
+                Observable.FromEventPattern<RemovedEvent>(this.drawViewModel.ShadowSenseService, "Removed")
+                     .Subscribe(x => ShadowSenseDeviceRemoved(x.Sender, x.EventArgs));
+
+            }
+
+        }
+        private void ShadowSenseDeviceRemoved(object sender, Baanto.ShadowSense.Events.RemovedEvent e)
+        {
+            var device = this.drawViewModel.ShadowSenseService.ShadowSenseDevice;
+            if (device != null)
+            {
+                device.TouchDown -= DeviceTouchDown;
+                device.TouchMove -= DeviceTouchMove;
+                device.TouchUp -= DeviceTouchUp;
+            }
+        }
+        private void ShadowSenseDeviceInserted(object sender, InsertedEvent e)
+        {
+            var device = this.drawViewModel.ShadowSenseService.ShadowSenseDevice;
+            if(device != null)
+            {
+                device.TouchDown += DeviceTouchDown;
+                device.TouchMove += DeviceTouchMove;
+                device.TouchUp += DeviceTouchUp;
+            }
+        }
+
+        private void DeviceTouchDown(object sender, ShadowSenseTouchEvent e)
+        {
+
+        }
+        private void DeviceTouchMove(object sender, ShadowSenseTouchEvent e)
+        {
+        }
+        private void DeviceTouchUp(object sender, ShadowSenseTouchEvent e)
+        {
         }
 
         private void DrawViewUnloaded(object sender, RoutedEventArgs e)
@@ -34,6 +90,8 @@ namespace ShadowSenseDemo.Views
             //Remove the WndProc
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.RemoveHook(WndProc);
+
+            ShadowSenseDeviceRemoved(this, null);
         }
 
         private void DrawViewLoaded(object sender, RoutedEventArgs e)

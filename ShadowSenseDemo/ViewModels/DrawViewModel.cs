@@ -14,6 +14,7 @@ namespace ShadowSenseDemo.ViewModels
             this.shadowSenseService = ss;
         }
         public string DisplayName { get; private set; }
+        public IShadowSenseService ShadowSenseService { get { return shadowSenseService; } }
 
     }
 }
