@@ -16,6 +16,9 @@ namespace ShadowSenseDemo.Views
     /// </summary>
     public partial class ShellView : Window
     {
+        private HwndSource source;
+        private HwndSourceHook sourceHook;
+
         public ShellView(ShellViewModel viewModel)
         {
             InitializeComponent();
@@ -30,15 +33,25 @@ namespace ShadowSenseDemo.Views
             this.Unloaded -= ShellViewUnloaded;
 
             UsbNotification.UnregisterUsbDeviceNotification();
+
+            source.RemoveHook(sourceHook);
+            sourceHook = null;
+
+            source.Dispose();
+
         }
 
         private void ShellViewLoaded(object sender, RoutedEventArgs e)
         {
             // Adds the windows message processing hook and registers USB device add/removal notification.
-            HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+
+            //            HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+            source = new HwndSource(0, 0, 0, 0, 0, "fake", IntPtr.Zero);
+
             if (source != null)
             {
-                source.AddHook(HwndHandler);
+                sourceHook = new HwndSourceHook(HwndHandler);
+                source.AddHook(sourceHook);
                 UsbNotification.RegisterUsbDeviceNotification(source.Handle);
             }
         }
