@@ -110,6 +110,7 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\BindableSelectedItemBehavior.cs" />
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Helpers\Edid.cs" />
     <Compile Include="Helpers\IWindowsDialogs.cs" />
     <Compile Include="Helpers\UsbNotification.cs" />
     <Compile Include="Helpers\User32.cs" />

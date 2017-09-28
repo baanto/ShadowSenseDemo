@@ -1,14 +1,17 @@
-﻿using Baanto.ShadowSense.Events;
+﻿using Baanto.ShadowSense;
+using Baanto.ShadowSense.Events;
 using ShadowSenseDemo.Helpers;
 using ShadowSenseDemo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace ShadowSenseDemo.Views
 {
@@ -22,9 +25,19 @@ namespace ShadowSenseDemo.Views
 
         private DrawViewModel drawViewModel;
 
+        private double physicalHeight = 0;
+        private double physicalWidth = 0;
+
         public DrawView()
         {
             InitializeComponent();
+
+            if (Edid.HasSettings)
+            {
+                physicalHeight = Edid.PhysicalHeight;
+                physicalWidth = Edid.PhysicalWidth;
+            }
+
 
             //Disable extra stylus processing so we can subscribe to events
             DisableWPFTouchAndStylus.DisableWPFTabletSupport();
@@ -55,7 +68,7 @@ namespace ShadowSenseDemo.Views
         }
         private void ShadowSenseDeviceRemoved(object sender, Baanto.ShadowSense.Events.RemovedEvent e)
         {
-            var device = this.drawViewModel.ShadowSenseService.ShadowSenseDevice;
+            var device = this.drawViewModel?.ShadowSenseService.ShadowSenseDevice;
             if (device != null)
             {
                 device.TouchDown -= DeviceTouchDown;
@@ -76,13 +89,146 @@ namespace ShadowSenseDemo.Views
 
         private void DeviceTouchDown(object sender, ShadowSenseTouchEvent e)
         {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                Window window = Window.GetWindow(this);
+                if (window == null)
+                    return;
 
+                //point in local co-ordinates
+                Point sp = window.PointFromScreen(new Point(
+                                        (e.Touch.X * System.Windows.SystemParameters.PrimaryScreenWidth),
+                                        (e.Touch.Y * System.Windows.SystemParameters.PrimaryScreenHeight)));
+
+                switch (e.Touch.Type)
+                {
+                    case TouchType.Touch:
+
+                        //remove stroke if it exists because it shouldn't
+                        if (this.currentTouches.ContainsKey(e.Touch.Id))
+                            this.currentTouches.Remove(e.Touch.Id);
+
+                        var width = this.MillimetersToPixels(e.Touch.Width, this.ActualWidth, this.physicalWidth);
+                        var height = this.MillimetersToPixels(e.Touch.Width, this.ActualHeight, this.physicalHeight);
+
+                        //create a new touch visualizer dot
+                        var dot = new TouchDot();
+                        dot.Width = width;
+                        dot.Height = height;
+
+                        //Add touch dot to dictionary
+                        this.currentTouches.Add(e.Touch.Id, dot);
+
+                        //add touch to canvas
+                        this.LayoutCanvas.Children.Add(dot);
+
+                        //move dot to correct location
+                        Canvas.SetLeft(dot, sp.X - (width / 2));
+                        Canvas.SetTop(dot, sp.Y - (height / 2));
+
+                        break;
+                    case TouchType.Stylus:
+                        StylusPointCollection spc = new StylusPointCollection{
+                                    new StylusPoint(sp.X, sp.Y)};
+
+                        //remove stroke if it exists because it shouldn't
+                        if (this.currentStrokes.ContainsKey(e.Touch.Id))
+                            this.currentStrokes.Remove(e.Touch.Id);
+
+                        //create a new stroke
+                        var stroke = new Stroke(spc);
+                        stroke.DrawingAttributes.FitToCurve = false;
+
+                        //add new stroke to presenter
+                        this.InkPresenter.Strokes.Add(stroke);
+
+                        //Add Stroke to dictionary so we can modify it later
+                        this.currentStrokes.Add(e.Touch.Id, stroke);
+
+                        break;
+                    default:
+                        break;
+                }
+            });
         }
+
         private void DeviceTouchMove(object sender, ShadowSenseTouchEvent e)
         {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                Window window = Window.GetWindow(this);
+                if (window == null)
+                    return;
+
+                //point in local co-ordinates
+                Point sp = window.PointFromScreen(new Point(
+                                        (e.Touch.X * System.Windows.SystemParameters.PrimaryScreenWidth),
+                                        (e.Touch.Y * System.Windows.SystemParameters.PrimaryScreenHeight)));
+                switch (e.Touch.Type)
+                {
+                    case TouchType.Touch:
+
+                        if (this.currentTouches.ContainsKey(e.Touch.Id))
+                        {
+                            var width = this.MillimetersToPixels(e.Touch.Width, this.ActualWidth, this.physicalWidth);
+                            var height = this.MillimetersToPixels(e.Touch.Width, this.ActualHeight, this.physicalHeight);
+
+                            var dot = this.currentTouches[e.Touch.Id];
+                            dot.Width = width;
+                            dot.Height = height;
+
+                            //move existing dot 
+                            Canvas.SetLeft(dot, sp.X - (width / 2));
+                            Canvas.SetTop(dot, sp.Y - (height / 2));
+                        }
+
+                        break;
+                    case TouchType.Stylus:
+                        //update stroke
+                        if (this.currentStrokes.ContainsKey(e.Touch.Id))
+                        {
+                            this.currentStrokes[e.Touch.Id].StylusPoints
+                                .Add(
+                                    new StylusPoint(
+                                        sp.X,
+                                        sp.Y));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            });
         }
         private void DeviceTouchUp(object sender, ShadowSenseTouchEvent e)
         {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                switch (e.Touch.Type)
+                {
+                    case TouchType.Touch:
+                        //remove dot from dictionary and screen
+                        if (this.currentTouches.ContainsKey(e.Touch.Id))
+                        {
+                            this.LayoutCanvas.Children.Remove(this.currentTouches[e.Touch.Id]);
+                            this.currentTouches.Remove(e.Touch.Id);
+                        }
+                        break;
+                    case TouchType.Stylus:
+                        //remove stroke form list and screen
+                        if (this.currentStrokes.ContainsKey(e.Touch.Id))
+                        {
+                            this.currentStrokes[e.Touch.Id].DrawingAttributes.FitToCurve = true;
+                            this.currentStrokes[e.Touch.Id] = null;
+                            this.currentStrokes.Remove(e.Touch.Id);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            });
+
         }
 
         private void DrawViewUnloaded(object sender, RoutedEventArgs e)
@@ -98,7 +244,19 @@ namespace ShadowSenseDemo.Views
         {
             //Add hook to receive WndProc messages
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
-            source.AddHook(WndProc);
+            //            source.AddHook(WndProc);
+
+            var device = this.drawViewModel?.ShadowSenseService.ShadowSenseDevice;
+            if (device != null)
+            {
+                //remove device hooks if there were any
+                ShadowSenseDeviceRemoved(this, null);
+                //add new device hooks
+                ShadowSenseDeviceInserted(this, null);
+
+
+            }
+
         }
         protected IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
         {
@@ -300,6 +458,11 @@ namespace ShadowSenseDemo.Views
                             sp.Y, 
                             (pointer.pressure / 1024)));
             }
+        }
+
+        private Double MillimetersToPixels(double mm, double pixels, double physical)
+        {
+            return mm * pixels / physical;
         }
 
     }
