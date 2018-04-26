@@ -147,17 +147,17 @@ namespace ShadowSenseDemo.Models
             get { return this.windowsTouchDataEnable; }
             set { this.RaiseAndSetIfChanged(ref this.windowsTouchDataEnable, value); }
         }
-        private bool shadowSenseTouchPipeEnable;
-        public bool ShadowSenseTouchPipeEnable
+        private bool stylusPipeEnable;
+        public bool StylusPipeEnable
         {
-            get { return this.shadowSenseTouchPipeEnable; }
-            set { this.RaiseAndSetIfChanged(ref this.shadowSenseTouchPipeEnable, value); }
+            get { return this.stylusPipeEnable; }
+            set { this.RaiseAndSetIfChanged(ref this.stylusPipeEnable, value); }
         }
-        private bool shadowSenseTouchDataEnable;
-        public bool ShadowSenseTouchDataEnable
+        private bool stylusDataEnable;
+        public bool StylusDataEnable
         {
-            get { return this.shadowSenseTouchDataEnable; }
-            set { this.RaiseAndSetIfChanged(ref this.shadowSenseTouchDataEnable, value); }
+            get { return this.stylusDataEnable; }
+            set { this.RaiseAndSetIfChanged(ref this.stylusDataEnable, value); }
         }
         private bool mousePipeEnable;
         public bool MousePipeEnable
@@ -270,6 +270,20 @@ namespace ShadowSenseDemo.Models
         {
             get { return this.stylusPalmRejectionRadius; }
             set { this.RaiseAndSetIfChanged(ref this.stylusPalmRejectionRadius, value); }
+        }
+
+        private byte stylusUpThreshold;
+        public byte StylusUpThreshold
+        {
+            get { return this.stylusUpThreshold; }
+            set { this.RaiseAndSetIfChanged(ref this.stylusUpThreshold, value); }
+        }
+
+        private byte irFrequency;
+        public byte IrFrequency
+        {
+            get { return this.irFrequency; }
+            set { this.RaiseAndSetIfChanged(ref this.irFrequency, value); }
         }
 
         #endregion
@@ -439,8 +453,8 @@ namespace ShadowSenseDemo.Models
             sss.MouseMode = settings.MouseMode;
             sss.WindowsTouchPipeEnable = settings.WindowsTouchPipeEnable;
             sss.WindowsTouchDataEnable = settings.WindowsTouchDataEnable;
-            sss.ShadowSenseTouchPipeEnable = settings.ShadowSenseTouchPipeEnable;
-            sss.ShadowSenseTouchDataEnable = settings.ShadowSenseTouchDataEnable;
+            sss.StylusPipeEnable = settings.StylusPipeEnable;
+            sss.StylusDataEnable = settings.StylusDataEnable;
             sss.MousePipeEnable = settings.MousePipeEnable;
             sss.MouseDataEnable = settings.MouseDataEnable;
             sss.MouseRightClickEnable = settings.MouseRightClickEnable;
@@ -460,6 +474,8 @@ namespace ShadowSenseDemo.Models
             sss.EraserShadowMaximumArea = settings.EraserShadowMaximumArea;
             sss.EraserShadowMinimumArea = settings.EraserShadowMinimumArea;
             sss.StylusPalmRejectionRadius = settings.StylusPalmRejectionRadius;
+            sss.StylusUpThreshold = settings.StylusUpThreshold;
+            sss.IrFrequency = settings.IrFrequency;
 
             sss.WaterRejectMode = settings.WaterRejectMode;
             sss.WaterRejectAmount = settings.WaterRejectAmount;
@@ -514,8 +530,8 @@ namespace ShadowSenseDemo.Models
             deviceSettings.MouseMode = settings.MouseMode;
             deviceSettings.WindowsTouchPipeEnable = settings.WindowsTouchPipeEnable;
             deviceSettings.WindowsTouchDataEnable = settings.WindowsTouchDataEnable;
-            deviceSettings.ShadowSenseTouchPipeEnable = settings.ShadowSenseTouchPipeEnable;
-            deviceSettings.ShadowSenseTouchDataEnable = settings.ShadowSenseTouchDataEnable;
+            deviceSettings.StylusPipeEnable = settings.StylusPipeEnable;
+            deviceSettings.StylusDataEnable = settings.StylusDataEnable;
             deviceSettings.MousePipeEnable = settings.MousePipeEnable;
             deviceSettings.MouseDataEnable = settings.MouseDataEnable;
             deviceSettings.MouseRightClickEnable = settings.MouseRightClickEnable;
@@ -535,6 +551,8 @@ namespace ShadowSenseDemo.Models
             deviceSettings.EraserShadowMaximumArea = settings.EraserShadowMaximumArea;
             deviceSettings.EraserShadowMinimumArea = settings.EraserShadowMinimumArea;
             deviceSettings.StylusPalmRejectionRadius = settings.StylusPalmRejectionRadius;
+            deviceSettings.StylusUpThreshold = settings.StylusUpThreshold;
+            deviceSettings.IrFrequency = settings.IrFrequency;
 
             deviceSettings.WaterRejectMode = settings.WaterRejectMode;
             deviceSettings.WaterRejectAmount = settings.WaterRejectAmount;

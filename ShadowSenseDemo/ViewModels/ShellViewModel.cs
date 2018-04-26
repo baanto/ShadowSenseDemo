@@ -69,7 +69,7 @@ namespace ShadowSenseDemo
             if (this.shadowSenseService.ShadowSenseDevice != null &&
                 this.shadowSenseService.ShadowSenseDevice.IsOpen)
             {
-                if (this.shadowSenseService.OpenDevice(this.shadowSenseService.ShadowSenseDevice))
+                    this.ShadowSenseDeviceInserted(null, null);
                     this.timer.Stop();
             }
             else

@@ -214,7 +214,43 @@
                                     </Grid>
                                 </TreeViewItem.Header>
                             </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Pipe Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusPipeEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem>
+                                <TreeViewItem.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="Stylus Data Enable" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                        <TextBox  Text="{Binding ShadowSenseSettings.StylusDataEnable, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                    </Grid>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
 
+                        </TreeViewItem>
+                        <TreeViewItem >
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="IR Frequency" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.IrFrequency, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
                         </TreeViewItem>
                     </TreeViewItem>
                     <TreeViewItem Header="Filters" Foreground="{DynamicResource MaterialDesignToolTipBackground}" FontWeight="DemiBold">
@@ -877,7 +913,18 @@
                                 </Grid>
                             </TreeViewItem.Header>
                         </TreeViewItem>
-
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock  Text="Stylus Up Threshold" Margin="0,0,150,0" VerticalAlignment="Center"/>
+                                    <TextBox  Text="{Binding ShadowSenseSettings.StylusUpThreshold, Mode=TwoWay}" materialDesign:TransitionAssist.DisableTransitions="True" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" MinWidth="50" HorizontalContentAlignment="Right"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
 
                     </TreeViewItem>
 

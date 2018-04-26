@@ -40,8 +40,8 @@
     <ApplicationIcon>SS.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Baanto.ShadowSense, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ShadowSense.1.0.3\lib\net452\Baanto.ShadowSense.dll</HintPath>
+    <Reference Include="Baanto.ShadowSense, Version=1.0.3.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ShadowSense.1.0.4\lib\net452\Baanto.ShadowSense.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Dragablz, Version=0.0.3.182, Culture=neutral, processorArchitecture=MSIL">

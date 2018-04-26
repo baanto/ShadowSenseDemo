@@ -86,7 +86,7 @@ namespace ShadowSenseDemo.Views
         {
             //got a device arrival so check if it's the one we want
 
-            if (UsbNotification.GetNameFromInterface(arg).Contains("VID_2453&PID_0100",StringComparison.OrdinalIgnoreCase))
+            if (UsbNotification.GetNameFromInterface(arg).Contains("VID_2453&PID_0100", StringComparison.OrdinalIgnoreCase))
             {
                 //it's ours do something with it
 

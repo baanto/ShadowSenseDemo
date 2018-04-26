@@ -12,7 +12,7 @@ using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-
+using System.Diagnostics;
 namespace ShadowSenseDemo.Views
 {
     /// <summary>
@@ -42,8 +42,8 @@ namespace ShadowSenseDemo.Views
             //Disable extra stylus processing so we can subscribe to events
             DisableWPFTouchAndStylus.DisableWPFTabletSupport();
 
-            this.Loaded += DrawViewLoaded;
-            this.Unloaded += DrawViewUnloaded;
+            //this.Loaded += DrawViewLoaded;
+            //this.Unloaded += DrawViewUnloaded;
 
             this.DataContextChanged += DrawViewDataContextChanged;
         }
@@ -62,6 +62,9 @@ namespace ShadowSenseDemo.Views
 
                 Observable.FromEventPattern<RemovedEvent>(this.drawViewModel.ShadowSenseService, "Removed")
                      .Subscribe(x => ShadowSenseDeviceRemoved(x.Sender, x.EventArgs));
+                var device = this.drawViewModel.ShadowSenseService.ShadowSenseDevice;
+                if (device != null)
+                    ShadowSenseDeviceInserted(null, new InsertedEvent(device.DevicePath, device.Name, device.Version));
 
             }
 
@@ -79,7 +82,7 @@ namespace ShadowSenseDemo.Views
         private void ShadowSenseDeviceInserted(object sender, InsertedEvent e)
         {
             var device = this.drawViewModel.ShadowSenseService.ShadowSenseDevice;
-            if(device != null)
+            if (device != null)
             {
                 device.TouchDown += DeviceTouchDown;
                 device.TouchMove += DeviceTouchMove;
@@ -177,6 +180,10 @@ namespace ShadowSenseDemo.Views
                             dot.Width = width;
                             dot.Height = height;
 
+                            //change colors of dot for hover
+                            if (e.Touch.Hover != dot.Hover)
+                                dot.SetHoverState(e.Touch.Hover);
+
                             //move existing dot 
                             Canvas.SetLeft(dot, sp.X - (width / 2));
                             Canvas.SetTop(dot, sp.Y - (height / 2));
@@ -244,7 +251,7 @@ namespace ShadowSenseDemo.Views
         {
             //Add hook to receive WndProc messages
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
-            //            source.AddHook(WndProc);
+            source.AddHook(WndProc);
 
             var device = this.drawViewModel?.ShadowSenseService.ShadowSenseDevice;
             if (device != null)
@@ -300,7 +307,7 @@ namespace ShadowSenseDemo.Views
                 case User32.POINTER_INPUT_TYPE.TOUCH:
                     pt = new User32.POINTER_TOUCH_INFO();
 
-                    if (!User32.GetPointerTouchInfo(pointerId, ref pt) )
+                    if (!User32.GetPointerTouchInfo(pointerId, ref pt))
                         break;
 
                     DecodeTouchMessage(msg, pt);
@@ -308,7 +315,7 @@ namespace ShadowSenseDemo.Views
                     break;
                 case User32.POINTER_INPUT_TYPE.PEN:
                     pp = new User32.POINTER_PEN_INFO();
-                    
+
                     if (!User32.GetPointerPenInfo(pointerId, ref pp))
                         break;
 
@@ -455,7 +462,7 @@ namespace ShadowSenseDemo.Views
                     .Add(
                         new StylusPoint(
                             sp.X,
-                            sp.Y, 
+                            sp.Y,
                             (pointer.pressure / 1024)));
             }
         }

@@ -16,7 +16,6 @@ namespace ShadowSenseDemo
             return typeof(T).GetProperties()[0].Name;
         }
     }
-
     public static class StringExtensions
     {
         public static bool Contains(this string source, string toCheck, StringComparison comp)

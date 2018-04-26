@@ -28,6 +28,7 @@ namespace ShadowSenseDemo.ViewModels
             "Calibration Period",
             "Recovery Speed",
             "Filter Depth",
+            "IR Frequency",
 
             "Touch Reject Enable",
             "Touch Reject Maximum Area",
@@ -41,8 +42,8 @@ namespace ShadowSenseDemo.ViewModels
             "Mouse Mode",
             "Windows Touch Pipe Enable",
             "Windows Touch Data Enable",
-            "ShadowSense Touch Pipe Enable",
-            "ShadowSense Touch Data Enable",
+            "Stylus Pipe Enable",
+            "Stylus Data Enable",
             "Mouse Pipe Enable",
             "Mouse Data Enable",
             "Mouse Right Click Enable",
@@ -67,6 +68,7 @@ namespace ShadowSenseDemo.ViewModels
             "Eraser Shadow Maximum Area",
             "Eraser Shadow Minimum Area",
             "Stylus Palm Rejection Radius",
+            "Stylus Up Threshold",
 
             "Touch Confidence",
             "Screen Mask",
@@ -199,7 +201,11 @@ namespace ShadowSenseDemo.ViewModels
                         if (result)
                             this.ShadowSenseSettings.RecoverySpeed = data;
                         break;
-
+                    case "Get IR Frequency":
+                        result = this.shadowSenseService.ShadowSenseDevice.GetIrFrequency(ref data);
+                        if (result)
+                            this.ShadowSenseSettings.IrFrequency = data;
+                        break;
                     //Setters
                     case "Set USB Boot Delay":
                         result = this.shadowSenseService.ShadowSenseDevice.SetUsbBootDelay(this.shadowSenseSettings.UsbBootDelay);
@@ -227,6 +233,9 @@ namespace ShadowSenseDemo.ViewModels
                         break;
                     case "Set Recovery Speed":
                         result = this.shadowSenseService.ShadowSenseDevice.SetRecoverySpeed(this.shadowSenseSettings.RecoverySpeed);
+                        break;
+                    case "Set IR Frequency":
+                        result = this.shadowSenseService.ShadowSenseDevice.SetIrFrequency(this.shadowSenseSettings.IrFrequency);
                         break;
                     #endregion
 
@@ -318,15 +327,15 @@ namespace ShadowSenseDemo.ViewModels
                         if (result)
                             this.ShadowSenseSettings.WindowsTouchDataEnable = bData;
                         break;
-                    case "Get ShadowSense Touch Pipe Enable":
-                        result = this.shadowSenseService.ShadowSenseDevice.GetShadowSenseTouchPipeEnable(ref bData);
+                    case "Get Stylus Pipe Enable":
+                        result = this.shadowSenseService.ShadowSenseDevice.GetStylusPipeEnable(ref bData);
                         if (result)
-                            this.ShadowSenseSettings.ShadowSenseTouchPipeEnable = bData;
+                            this.ShadowSenseSettings.StylusPipeEnable = bData;
                         break;
-                    case "Get ShadowSense Touch Data Enable":
-                        result = this.shadowSenseService.ShadowSenseDevice.GetShadowSenseTouchDataEnable(ref bData);
+                    case "Get Stylus Data Enable":
+                        result = this.shadowSenseService.ShadowSenseDevice.GetStylusDataEnable(ref bData);
                         if (result)
-                            this.ShadowSenseSettings.ShadowSenseTouchDataEnable = bData;
+                            this.ShadowSenseSettings.StylusDataEnable = bData;
                         break;
                     case "Get Mouse Pipe Enable":
                         result = this.shadowSenseService.ShadowSenseDevice.GetMousePipeEnable(ref bData);
@@ -359,6 +368,7 @@ namespace ShadowSenseDemo.ViewModels
                             this.ShadowSenseSettings.MouseDeadband = data;
                         break;
 
+
                     //Setters
                     case "Set Mouse Mode":
                         result = this.shadowSenseService.ShadowSenseDevice.SetMouseMode(this.shadowSenseSettings.MouseMode);
@@ -369,11 +379,11 @@ namespace ShadowSenseDemo.ViewModels
                     case "Set Windows Touch Data Enable":
                         result = this.shadowSenseService.ShadowSenseDevice.SetWindowsTouchDataEnable(this.shadowSenseSettings.WindowsTouchDataEnable);
                         break;
-                    case "Set ShadowSense Touch Pipe Enable":
-                        result = this.shadowSenseService.ShadowSenseDevice.SetShadowSenseTouchPipeEnable(this.shadowSenseSettings.ShadowSenseTouchPipeEnable);
+                    case "Set Stylus Pipe Enable":
+                        result = this.shadowSenseService.ShadowSenseDevice.SetStylusPipeEnable(this.shadowSenseSettings.StylusPipeEnable);
                         break;
-                    case "Set ShadowSense Touch Data Enable":
-                        result = this.shadowSenseService.ShadowSenseDevice.SetShadowSenseTouchDataEnable(this.shadowSenseSettings.ShadowSenseTouchDataEnable);
+                    case "Set Stylus Data Enable":
+                        result = this.shadowSenseService.ShadowSenseDevice.SetStylusDataEnable(this.shadowSenseSettings.StylusDataEnable);
                         break;
                     case "Set Mouse Pipe Enable":
                         result = this.shadowSenseService.ShadowSenseDevice.SetMousePipeEnable(this.shadowSenseSettings.MousePipeEnable);
@@ -428,6 +438,12 @@ namespace ShadowSenseDemo.ViewModels
                         if (result)
                             this.ShadowSenseSettings.EraserMinimumArea = bigData;
                         break;
+                    case "Get Stylus Up Threshold":
+                        result = this.shadowSenseService.ShadowSenseDevice.GetStylusUpThreshold(ref data);
+                        if (result)
+                            this.ShadowSenseSettings.StylusUpThreshold = data;
+                        break;
+
                     //Setters
                     case "Set Stylus Enable":
                         result = this.shadowSenseService.ShadowSenseDevice.SetStylusEnable(this.shadowSenseSettings.StylusEnable);
@@ -446,6 +462,9 @@ namespace ShadowSenseDemo.ViewModels
                         break;
                     case "Set Eraser Minimum Area":
                         result = this.shadowSenseService.ShadowSenseDevice.SetEraserMinimumArea(this.shadowSenseSettings.EraserMinimumArea);
+                        break;
+                    case "Set Stylus Up Threshold":
+                        result = this.shadowSenseService.ShadowSenseDevice.SetStylusUpThreshold(this.shadowSenseSettings.StylusUpThreshold);
                         break;
 
                     #endregion

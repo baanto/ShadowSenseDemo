@@ -21,14 +21,14 @@ namespace ShadowSenseDemo.ViewModels
             this.shadowSenseService = ss;
 
             this.localDevices = new ReactiveList<ShadowSenseDeviceInfo>();
-      //      this.localDevices.AddRange(this.shadowSenseService.GetDeviceInfo());
+            this.localDevices.AddRange(this.shadowSenseService.GetDeviceInfo());
             this.currentDevice = this.localDevices.FirstOrDefault();
 
             this.Refresh = ReactiveCommand.CreateAsyncTask(x => Task.Run(() =>
             {
                 var devices = new ReactiveList<ShadowSenseDeviceInfo>();
 
- //               devices.AddRange(this.shadowSenseService.GetDeviceInfo());
+                devices.AddRange(this.shadowSenseService.GetDeviceInfo());
 
                 this.LocalDevices = devices;
                 this.CurrentDevice = this.localDevices.FirstOrDefault();
@@ -38,7 +38,7 @@ namespace ShadowSenseDemo.ViewModels
                 .Where(x => x != null)
                 .Subscribe(x =>
                 {
-                    if (this.shadowSenseService.ShadowSenseDevice != null)
+                    if(this.shadowSenseService.ShadowSenseDevice != null)
                     {
                         this.shadowSenseService.CloseDevice();
                     }
